@@ -2,11 +2,16 @@ var express = require('express');
 var app = express();
 var swig = require('swig');
 var morgan = require('morgan');
-// var router = require('./routes');
+var path = require('path');
+
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
 var socketio = require('socket.io');
+var wikiRouter = require('./routes/wiki');
+var models = require('./models');
+var Page = models.Page;
+var Users = models.User;
 
 
 /* SWIG CONFIG */
@@ -29,14 +34,25 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
 app.use(bodyParser.json()); // would be for AJAX requests
 
+app.use(express.static('public'));
+
 app.get('/', function(req, res, next){
   res.render('index');
 })
 
+/* ROUTERS */
+app.use('/wiki', wikiRouter);
+
 
 /* SERVER SETUP */
-
-app.listen(3001, function(req, res, next){
-  console.log('Listening on port 3001 :)');
+Page.sync({force:true})
+.then(function(){
+  return Users.sync({force:true});
 })
+.then(function(){
+  app.listen(3001, function(req, res, next){
+  console.log('Listening on port 3001 :)');
+})}) 
+.catch(console.error);
+
 
