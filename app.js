@@ -11,7 +11,7 @@ var socketio = require('socket.io');
 var wikiRouter = require('./routes/wiki');
 var models = require('./models');
 var Page = models.Page;
-var Users = models.User;
+var User = models.User;
 
 
 /* SWIG CONFIG */
@@ -45,9 +45,9 @@ app.use('/wiki', wikiRouter);
 
 
 /* SERVER SETUP */
-Page.sync({force:true})
+User.sync({})
 .then(function(){
-  return Users.sync({force:true});
+  return Page.sync({});
 })
 .then(function(){
   app.listen(3001, function(req, res, next){

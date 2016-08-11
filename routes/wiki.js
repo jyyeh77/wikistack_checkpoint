@@ -8,6 +8,17 @@ router.get('/add', function(req, res, next) {
   res.render('addpage');
 });
 
+router.get('/', function(req, res, next) {
+  console.log('Returning to home page!');
+  var pages;
+  Page.findAll({
+  })
+  .then(function(foundPages){
+    res.render('index', {pages: foundPages});
+  })
+  .catch(next);
+});
+
 router.post('/', function(req, res, next) {
   var page = Page.build({
     title: req.body.title,
@@ -16,12 +27,22 @@ router.post('/', function(req, res, next) {
 
   page.save()
     .then(function(){
-      res.redirect('/');
+      res.redirect(page.route);
     })
+    .catch(next);
 });
 
-router.get('/', function(req, res, next) {
-  res.redirect('/');
-});
+router.get('/:urlTitle', function(req, res, next){
+  var page;
+  Page.findOne({
+    where: {
+      urlTitle: req.params.urlTitle
+    }
+  })
+  .then(function(foundPage){
+    res.render('wikipage', { page: foundPage });
+  })
+  .catch(next);
+})
 
 module.exports = router;

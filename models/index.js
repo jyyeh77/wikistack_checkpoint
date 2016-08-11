@@ -34,14 +34,12 @@ var Page = db.define('page', {
 },
   {
     hooks: {
-      beforeValidate: function (title) {
+      beforeValidate: function (page) {
         if (page.title){
            page.urlTitle = page.title.replace(/\s+/g, '_').replace(/\W/g, '');
         } else {
           page.urlTitle = Math.random().toString(36).substring(2, 7);
         }
-      }
-
       }
     },
 
