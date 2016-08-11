@@ -2,10 +2,10 @@
 
 {% block content %}
   <h3>{{foundPage.title}}<small> (<a href="PLACEHOLDER_URL_TITLE/similar">Similar</a>)</small></h3>
-  <h4>by <a href="PLACEHOLDER-AUTHOR-URL">PLACEHOLDER AUTHOR NAME</a></h4>
+  <h4>by <a href="/users/{{foundAuthor.id}}">{{foundAuthor.name}}</a></h4>
   <div>PLACEHOLDER TAG LIST</div>
   <hr/>
-  <div>PLACEHOLDER AUTHOR NAME WITH LINK TO AUTHOR PAGE</div>
+  <div>{{foundAuthor.name}}</div>
   <div class="page-body">{{foundPage.content}}</div>
   <hr/>
   <a href="{{foundPage.urlTitle}}/edit" class="btn btn-primary">edit this page</a>

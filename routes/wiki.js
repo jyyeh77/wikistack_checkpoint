@@ -9,7 +9,6 @@ router.get('/add', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-  console.log('Returning to home page!');
   var pages;
   Page.findAll({
   })
@@ -20,16 +19,27 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  var page = Page.build({
-    title: req.body.title,
-    content: req.body.content
-  });
 
-  page.save()
-    .then(function(){
-      res.redirect(page.route);
-    })
-    .catch(next);
+  User.findOrCreate({
+    where: {
+      name: req.body.authorName,
+      email: req.body.authorEmail
+    }
+  })
+  .spread(function(user, createdBoolean){
+    var page = Page.build({
+      title: req.body.title,
+      content: req.body.content
+    });
+
+    return page.save().then(function(page){
+      return page.setAuthor(user);
+    });
+  })
+  .then(function(page){
+    res.redirect(page.route);
+  })
+  .catch(next);
 });
 
 router.get('/:urlTitle', function(req, res, next){
@@ -40,7 +50,16 @@ router.get('/:urlTitle', function(req, res, next){
     }
   })
   .then(function(foundPage){
-    res.render('wikipage', { page: foundPage });
+    var user;
+    foundPage.getAuthor({
+      where: {
+        id: foundPage.authorId
+      }
+    })
+    .then(function(foundAuthor){
+      user = foundAuthor;
+      res.render('wikipage', {foundPage: foundPage, foundAuthor: foundAuthor});
+    })
   })
   .catch(next);
 })

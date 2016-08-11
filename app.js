@@ -9,6 +9,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var socketio = require('socket.io');
 var wikiRouter = require('./routes/wiki');
+var userRouter = require('./routes/user');
 var models = require('./models');
 var Page = models.Page;
 var User = models.User;
@@ -42,6 +43,7 @@ app.get('/', function(req, res, next){
 
 /* ROUTERS */
 app.use('/wiki', wikiRouter);
+app.use('/users', userRouter);
 
 
 /* SERVER SETUP */
